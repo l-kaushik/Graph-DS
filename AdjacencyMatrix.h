@@ -2,6 +2,8 @@
 
 #include <iostream>
 #include <unordered_map>
+#include <queue>
+#include <vector>
 
 template <class T>
 class Graph
@@ -10,6 +12,7 @@ public:
     Graph() : adjMatrix() {};
     void AddEdge(T FirstVertex, T SecondVertex, bool direction = false);
     void display();
+    std::vector<T> BreadthFirstSearch(T SourceNode);
 private:
     std::unordered_map<T, std::unordered_map<T, bool>> adjMatrix;    
 };
@@ -37,4 +40,36 @@ void Graph<T>::display()
         }
         std::cout << '\n';
     }
+}
+
+template <class T>
+std::vector<T> Graph<T>::BreadthFirstSearch(T SourceNode)
+{
+    std::queue<T> q;
+    std::unordered_map<T, bool> visited;
+    std::vector<T> ans;
+
+    q.push(SourceNode);
+    visited[SourceNode] = true;
+
+    while(!q.empty())
+    {
+        T FrontNode = q.front();
+        q.pop();
+
+        // push into answer
+        ans.push_back(FrontNode);
+
+        for (const auto &i : adjMatrix[FrontNode])
+        {
+            T j = i.first;
+            if (!visited[j])
+            {
+                q.push(j);
+                visited[j] = true;
+            }
+        }
+    }
+
+    return ans;
 }
