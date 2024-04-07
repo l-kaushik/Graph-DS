@@ -11,8 +11,15 @@ public:
     Graph() = default;
     void AddEdge(T u, T v, bool direction = false);
     void display();
+    void DisplayVectoredList();
 private:
     std::unordered_map<T, std::list<T>> adj{};
+
+    /*
+        std::vector<std::vector<T>>
+
+        This can be used in place of map, but needs extra implementations for index
+    */
 };
 
 template <class T>
