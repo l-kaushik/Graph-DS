@@ -25,6 +25,7 @@ namespace AdjacencyList
         void display();
         std::vector<T> BreadthFirstSearch();
         std::vector<T> BreadthFirstSearch(T SourceNode);
+        std::vector<T> DepthFirstSearch();
         std::vector<T> DepthFirstSearch(T SourceNode);
 
     private:
@@ -136,12 +137,33 @@ namespace AdjacencyList
     }
 
     template <class T>
+    std::vector<T> Graph<T>::DepthFirstSearch()
+    {
+        std::unordered_map<T, bool> visited;
+        std::vector<T> ans;
+
+        for(const auto &node : adjList)
+        {
+            if(!visited[node.first])
+                DFSRecur(node.first, ans, visited);
+        }
+        return ans;
+    }
+
+    template <class T>
     std::vector<T> Graph<T>::DepthFirstSearch(T SourceNode)
     {
         std::unordered_map<T, bool> visited;
         std::vector<T> ans;
 
         DFSRecur(SourceNode, ans, visited);
+
+        for(const auto &node : adjList)
+        {
+            if(!visited[node.first])
+                DFSRecur(node.first, ans, visited);
+        }
+
         return ans;
     }
 
