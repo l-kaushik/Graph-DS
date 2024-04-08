@@ -15,7 +15,7 @@ namespace AdjacencyList
         Graph() : adjList(){};
         Graph(std::initializer_list<std::pair<T, std::list<T>>> initList)
         {
-            for(const auto& pair : initList)
+            for (const auto &pair : initList)
             {
                 adjList[pair.first] = pair.second;
             }
@@ -23,14 +23,17 @@ namespace AdjacencyList
 
         void AddEdge(T u, T v, bool direction = false);
         void display();
+        std::vector<T> BreadthFirstSearch();
         std::vector<T> BreadthFirstSearch(T SourceNode);
         std::vector<T> DepthFirstSearch(T SourceNode);
 
     private:
+        void BFSRecur(T SourceNode,std::queue<T> &q, std::vector<T> &ans, std::unordered_map<T, bool> &visited);
         void DFSRecur(T SourceNode, std::vector<T> &ans, std::unordered_map<T, bool> &visited);
 
     private:
         std::unordered_map<T, std::list<T>> adjList{};
+        static T DefaultValue;
 
         /*
             std::vector<std::vector<T>>
@@ -67,12 +70,48 @@ namespace AdjacencyList
     }
 
     template <class T>
+    std::vector<T> Graph<T>::BreadthFirstSearch()
+    {
+        std::queue<T> q;
+        std::unordered_map<T, bool> visited;
+        std::vector<T> ans;
+
+        // traverse each node
+        for (const auto &node : adjList)
+        {
+            if (!visited[node.first])
+            {
+                BFSRecur(node.first, q, ans, visited);
+            }
+        }
+        return ans;
+    }
+
+    // if user provide a default starting node
+
+    template <class T>
     std::vector<T> Graph<T>::BreadthFirstSearch(T SourceNode)
     {
         std::queue<T> q;
         std::unordered_map<T, bool> visited;
         std::vector<T> ans;
 
+        BFSRecur(SourceNode, q, ans, visited);
+
+        // traverse each node
+        for (const auto &node : adjList)
+        {
+            if (!visited[node.first])
+            {
+                BFSRecur(node.first, q, ans, visited);
+            }
+        }
+        return ans;
+    }
+
+    template <class T>
+    void Graph<T>::BFSRecur(T SourceNode,std::queue<T> &q, std::vector<T> &ans, std::unordered_map<T, bool> &visited)
+    {
         q.push(SourceNode);
         visited[SourceNode] = true;
 
@@ -94,8 +133,6 @@ namespace AdjacencyList
                 }
             }
         }
-
-        return ans;
     }
 
     template <class T>
@@ -118,9 +155,9 @@ namespace AdjacencyList
         ans.push_back(SourceNode);
 
         // recur for all other nodes
-        for(const auto &i : adjList[SourceNode])
+        for (const auto &i : adjList[SourceNode])
         {
-            if(!visited[i])
+            if (!visited[i])
             {
                 DFSRecur(i, ans, visited);
             }
