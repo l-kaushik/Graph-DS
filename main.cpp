@@ -3,8 +3,8 @@
 
 int main()
 {
-    AdjacencyList::Graph<int> g1({{1, {2,3,4}}, {2, {1, 3, 4}}, {3, {1, 2}}});
-    AdjacencyMatrix::Graph<int> g2({{1, {2,3,4}}, {2, {1, 3, 4}}, {3, {1, 2}}});
+    AdjacencyList::Graph<int> g1({{0, {1,2,3}}, {1, {0,2}}, {2, {0,1,3, 4}}, {3, {0,2,4}}, {4, {2, 3, 5, 6}}, {5, {4}}, {6, {4}}});
+    AdjacencyMatrix::Graph<int> g2({{0, {1,2,3}}, {1, {0,2}}, {2, {0,1,3, 4}}, {3, {0,2,4}}, {4, {2, 3, 5, 6}}, {5, {4}}, {6, {4}}});
 
     // g1.AddEdge(1,2);
     // g1.AddEdge(2,3);
@@ -16,7 +16,7 @@ int main()
     // g2.AddEdge(1,3);
     // g2.AddEdge(2,4);
     
-    std::vector<int> ans = g1.BreadthFirstSearch(1);
+    std::vector<int> ans = g1.DepthFirstSearch(1);
     
     for(const auto &i : ans)
     {

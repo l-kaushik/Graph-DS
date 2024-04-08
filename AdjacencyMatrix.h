@@ -31,6 +31,10 @@ namespace AdjacencyMatrix
         void AddEdge(T FirstVertex, T SecondVertex, bool direction = false);
         void display();
         std::vector<T> BreadthFirstSearch(T SourceNode);
+        std::vector<T> DepthFirstSearch(T SourceNode);
+
+    private:
+        void DFSRecur(T SourceNode, std::vector<T> &ans, std::unordered_map<T, bool> &visited);
 
     private:
         std::unordered_map<T, std::unordered_map<T, bool>> adjMatrix;
@@ -93,4 +97,32 @@ namespace AdjacencyMatrix
         return ans;
     }
 
+    template <class T>
+    std::vector<T> Graph<T>::DepthFirstSearch(T SourceNode)
+    {
+        std::unordered_map<T, bool> visited;
+        std::vector<T> ans;
+
+        DFSRecur(SourceNode, ans, visited);
+        return ans;
+    }
+
+    template <class T>
+    void Graph<T>::DFSRecur(T SourceNode, std::vector<T> &ans, std::unordered_map<T, bool> &visited)
+    {
+        // marks as visited
+        visited[SourceNode] = true;
+
+        // put in the answer vector
+        ans.push_back(SourceNode);
+
+        // recur for all other nodes
+        for(const auto &i : adjMatrix[SourceNode])
+        {
+            if(!visited[i.first])
+            {
+                DFSRecur(i.first, ans, visited);
+            }
+        }
+    }
 }
