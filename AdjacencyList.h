@@ -23,6 +23,11 @@ namespace AdjacencyList
 
         void AddEdge(T u, T v, bool direction = false);
         void display();
+
+        bool isCyclicBFS();
+        
+        // Searching
+
         std::vector<T> BreadthFirstSearch();
         std::vector<T> BreadthFirstSearch(T SourceNode);
         std::vector<T> DepthFirstSearch();
@@ -31,10 +36,10 @@ namespace AdjacencyList
     private:
         void BFSRecur(T SourceNode,std::queue<T> &q, std::vector<T> &ans, std::unordered_map<T, bool> &visited);
         void DFSRecur(T SourceNode, std::vector<T> &ans, std::unordered_map<T, bool> &visited);
+        bool CyclicUtil(T SourceNode, std::queue<T> &q, std::unordered_map<T, bool> &visited, std::unordered_map<T, T> &parent);
 
     private:
         std::unordered_map<T, std::list<T>> adjList{};
-        static T DefaultValue;
 
         /*
             std::vector<std::vector<T>>
@@ -69,6 +74,58 @@ namespace AdjacencyList
             std::cout << '\n';
         }
     }
+
+    template <class T>
+    bool Graph<T>::isCyclicBFS()
+    {
+        std::queue<T> q;
+        std::unordered_map<T, bool> visited;
+        std::unordered_map<T, T> parent;
+
+        // traverse each node
+        for(const auto& node : adjList)
+        {
+            if(!visited[node.first])
+            {
+                if(CyclicUtil(node.first, q, visited, parent))
+                    return true;
+            }
+        }
+
+        return false;
+    }
+
+    template <class T>
+    bool CyclicUtil(T SourceNode, std::queue<T> &q, std::unordered_map<T, bool> &visited, std::unordered_map<T, T> &parent)
+    {
+        parent[SourceNode];
+        visited[SourceNode] = true;
+        q.push(SourceNode);
+
+        while (!q.empty())
+        {
+            T FrontNode = q.front();
+            q.pop();
+
+            // traverse all neighbours of FrontNode;
+            for (const auto &i : adjList[FrontNode])
+            {
+                if (visited[i] && i != parent[FrontNode])
+                {
+                    return true;
+                }
+                else if(!visited[i])
+                {
+                    q.push(i);
+                    visited[i] = true;
+                    parent[i] = FrontNode;
+                }    
+            }
+        }
+
+        return false;
+    }
+
 
     template <class T>
     std::vector<T> Graph<T>::BreadthFirstSearch()
